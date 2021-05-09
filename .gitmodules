@@ -58,7 +58,7 @@
 	url = https://github.com/ucb-bar/esp-gnu-toolchain.git
 [submodule "toolchains/esp-tools/riscv-isa-sim"]
 	path = toolchains/esp-tools/riscv-isa-sim
-	url = https://github.com/ucb-bar/esp-isa-sim.git
+	url = https://github.com/ryan-lund/esp-isa-sim.git
 [submodule "toolchains/esp-tools/riscv-pk"]
 	path = toolchains/esp-tools/riscv-pk
 	url = https://github.com/riscv/riscv-pk.git
