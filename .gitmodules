@@ -134,3 +134,9 @@
 [submodule "fpga/fpga-shells"]
 	path = fpga/fpga-shells
 	url = https://github.com/sifive/fpga-shells.git
+[submodule "tools/verif"]
+	path = tools/verif
+	url = https://github.com/TsaiAnson/verif.git
+[submodule "tools/chiseltest"]
+	path = tools/chiseltest
+	url = https://github.com/ryan-lund/chisel-testers2.git
