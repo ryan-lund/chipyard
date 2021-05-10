@@ -112,7 +112,7 @@ class WithMultiRoCCGemmini(harts: Int*) extends Config((site, here, up) => {
   case MultiRoCCKey => up(MultiRoCCKey, site) ++ harts.distinct.map { i =>
     (i -> Seq((p: Parameters) => {
       implicit val q = p
-      val gemmini = LazyModule(new Gemmini(OpcodeSet.custom3, GemminiConfigs.defaultConfig))
+      val gemmini = LazyModule(new Gemmini(GemminiConfigs.defaultConfig))
       gemmini
     }))
   }

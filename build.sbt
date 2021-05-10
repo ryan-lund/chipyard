@@ -319,3 +319,57 @@ lazy val fpga_shells = (project in file("./fpga/fpga-shells"))
 lazy val fpga_platforms = (project in file("./fpga"))
   .dependsOn(chipyard, fpga_shells)
   .settings(commonSettings)
+
+lazy val chiseltest = (project in file("./tools/chiseltest"))
+  .sourceDependency(chiselRef, chiselLib)
+  .settings(libraryDependencies ++= chiselLibDeps.value)
+  .dependsOn(firrtl_interpreter, treadle)
+  .settings(libraryDependencies ++= firrtlInterpreterLibDeps.value)
+  .settings(libraryDependencies ++= treadleLibDeps.value)
+  .settings(commonSettings)
+lazy val chiseltestLibDeps = (chiseltest / Keys.libraryDependencies)
+
+
+val directoryLayout = Seq(
+  scalaSource in Compile := baseDirectory.value / "src",
+  javaSource in Compile := baseDirectory.value / "resources",
+  resourceDirectory in Compile := baseDirectory.value / "resources",
+  scalaSource in Test := baseDirectory.value / "test",
+  javaSource in Test := baseDirectory.value / "resources",
+  resourceDirectory in Test := baseDirectory.value / "resources",
+)
+
+val verifSettings = Seq(
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("snapshots"),
+    Resolver.sonatypeRepo("releases"),
+    Resolver.mavenLocal
+  ),
+  scalacOptions := Seq("-deprecation", "-unchecked", "-Xsource:2.11", "-language:reflectiveCalls"),
+  libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.+" % "test",
+  libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.2.3"
+)
+
+lazy val verifCore = (project in file("./tools/verif/core"))
+  .settings(directoryLayout)
+  .sourceDependency(chiselRef, chiselLib)
+  .dependsOn(rocketchip, chipyard, dsptools, `rocket-dsptools`, chiseltest)
+  .settings(libraryDependencies ++= chiselTestersLibDeps.value)
+  .settings(commonSettings)
+  .settings(verifSettings)
+
+lazy val verifTL = (project in file("./tools/verif/tilelink"))
+  .settings(directoryLayout)
+  .sourceDependency(chiselRef, chiselLib)
+  .dependsOn(verifCore)
+  .settings(commonSettings)
+  .settings(verifSettings)
+
+lazy val verifCosim = (project in file("./tools/verif/cosim"))
+  .settings(directoryLayout)
+  .sourceDependency(chiselRef, chiselLib)
+  .dependsOn(verifCore, verifTL, chipyard)
+  .settings(commonSettings)
+  .settings(verifSettings)
+  .settings(libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.14.0")
+  .settings(libraryDependencies += "com.google.protobuf" % "protobuf-java-util" % "3.14.0")
